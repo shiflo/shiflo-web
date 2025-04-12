@@ -1,5 +1,5 @@
 {
-  "name": "shiftly-web",
+  "name": "@shiftly/web",
   "type": "module",
   "private": true,
   "sideEffects": false,
@@ -13,18 +13,20 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "basic-navigation": "^0.0.9",
-    "basic-styled": "^0.0.14",
+    "@shiflo/ui": "^0.0.5",
+    "basic-navigation": "^0.1.4",
+    "basic-styled": "^0.1.8",
+    "dayjs": "^1.11.13",
     "hono": "^4.7.2",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
   },
   "devDependencies": {
-    "@eslint/js": "^9.21.0",
+    "@eslint/js": "^9.23.0",
     "@hono/vite-dev-server": "^0.19.0",
     "@types/bun": "^1.2.4",
-    "@types/react": "^19.0.10",
-    "@types/react-dom": "^19.0.4",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.1",
     "@vitejs/plugin-react-swc": "^3.8.0",
     "eslint": "^9.21.0",
     "eslint-config-prettier": "^10.0.2",

@@ -1,4 +1,4 @@
-# shiftly-web
+# shiflo-web
 
 To install dependencies:
 

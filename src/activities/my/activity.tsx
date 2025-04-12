@@ -1,12 +1,10 @@
-import { SlideScreen, useNavigation } from 'basic-navigation';
+import { AppScreen } from 'basic-navigation';
+
+import BottomNavigationBar from '@components/molecules/BottomNavigationBar';
 
 function MyActivity() {
-  const { back } = useNavigation();
-
-  const handleClick = () => back();
-
   return (
-    <SlideScreen>
+    <AppScreen bottomNavigationBar={<BottomNavigationBar />} bottomNavigationBarHeight={72}>
       <h1
         style={{
           marginTop: 'env(safe-area-inset-top)'
@@ -14,8 +12,7 @@ function MyActivity() {
       >
         My Activity
       </h1>
-      <button onClick={handleClick}>Back to HomeActivity</button>
-    </SlideScreen>
+    </AppScreen>
   );
 }
 

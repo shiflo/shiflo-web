@@ -22,7 +22,7 @@ export default defineConfig({
   plugins: [
     devServer({
       entry: 'api/index.ts',
-      injectClientScript: true
+      injectClientScript: false
     })
   ],
   resolve: {
@@ -38,7 +38,26 @@ export default defineConfig({
       {
         find: '@activities',
         replacement: resolve(__dirname, 'src/activities')
+      },
+      {
+        find: '@components',
+        replacement: resolve(__dirname, 'src/components')
+      },
+      {
+        find: '@entities',
+        replacement: resolve(__dirname, 'src/entities')
+      },
+      {
+        find: '@hooks',
+        replacement: resolve(__dirname, 'src/hooks')
+      },
+      {
+        find: '@libraries',
+        replacement: resolve(__dirname, 'src/libraries')
       }
     ]
+  },
+  server: {
+    host: '192.168.0.41'
   }
 });

@@ -1,21 +1,24 @@
-import { SlideScreen, useNavigation } from 'basic-navigation';
+import Box from '@shiflo/ui/Box';
+import { AppScreen } from 'basic-navigation';
+
+import { Calendar, Toolbar } from '@activities/_components';
+import BottomNavigationBar from '@components/molecules/BottomNavigationBar';
 
 function HomeActivity() {
-  const { push } = useNavigation();
-
-  const handleClick = () => push('MyActivity');
-
   return (
-    <SlideScreen>
-      <h1
-        style={{
-          marginTop: 'env(safe-area-inset-top)'
+    <AppScreen bottomNavigationBar={<BottomNavigationBar />} bottomNavigationBarHeight={72}>
+      <Box
+        as="main"
+        display="flex"
+        flexDirection="column"
+        css={{
+          height: '100%'
         }}
       >
-        Home Activity
-      </h1>
-      <button onClick={handleClick}>Go to MyActivity</button>
-    </SlideScreen>
+        <Toolbar />
+        <Calendar />
+      </Box>
+    </AppScreen>
   );
 }
 

@@ -1,10 +1,15 @@
-import { Navigate, Navigator } from 'basic-navigation';
+import ThemeProvider from '@shiflo/ui/theme/ThemeProvider';
+import { Route, Router } from 'basic-navigation';
 
-import ResetStyle from 'basic-styled/setup/ResetStyle';
+import createBuilder from 'basic-styled/setup/createBuilder';
 
 import HomeActivity from '@activities/activity';
 import NotFoundActivity from '@activities/error/not-found/activity';
 import MyActivity from '@activities/my/activity';
+
+createBuilder({
+  prefix: 'shiflo'
+});
 
 interface AppProps {
   initPath?: string;
@@ -12,20 +17,13 @@ interface AppProps {
 
 function App({ initPath }: AppProps) {
   return (
-    <>
-      <ResetStyle />
-      <Navigator initPath={initPath}>
-        <Navigate name="HomeActivity" path="/">
-          <HomeActivity />
-        </Navigate>
-        <Navigate name="MyActivity" path="/my">
-          <MyActivity />
-        </Navigate>
-        <Navigate name="NotFoundActivity" path="/*path">
-          <NotFoundActivity />
-        </Navigate>
-      </Navigator>
-    </>
+    <ThemeProvider theme="light">
+      <Router initPath={initPath}>
+        <Route name="HomeActivity" path="/" activity={<HomeActivity />} />
+        <Route name="MyActivity" path="/my" activity={<MyActivity />} />
+        <Route name="NotFoundActivity" path="/*path" activity={<NotFoundActivity />} />
+      </Router>
+    </ThemeProvider>
   );
 }
 

@@ -20,6 +20,26 @@ const alias = [
     find: '@activities',
     chunkPath: 'src/activities',
     replacement: resolve(__dirname, 'src/activities')
+  },
+  {
+    find: '@components',
+    chunkPath: 'src/components',
+    replacement: resolve(__dirname, 'src/components')
+  },
+  {
+    find: '@entities',
+    chunkPath: 'src/entities',
+    replacement: resolve(__dirname, 'src/entities')
+  },
+  {
+    find: '@hooks',
+    chunkPath: 'src/hooks',
+    replacement: resolve(__dirname, 'src/hooks')
+  },
+  {
+    find: '@libraries',
+    chunkPath: 'src/libraries',
+    replacement: resolve(__dirname, 'src/libraries')
   }
 ];
 

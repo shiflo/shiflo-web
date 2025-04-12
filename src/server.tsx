@@ -26,7 +26,7 @@ export async function createRender({
       bootstrapScriptContent: initBootstrapScriptContent(bootstrapScriptContent, {
         initPath: context.req.path
       }),
-      bootstrapModules: initBoostrapModules(bootstrapModules),
+      bootstrapModules,
       ...options
     }
   );
@@ -45,12 +45,4 @@ function initBootstrapScriptContent(
   return `${bootstrapScriptContent || ''}${Object.keys(params)
     .map((key) => `window.${key}=${JSON.stringify(params[key as keyof typeof params])};`)
     .join(' ')}`;
-}
-
-function initBoostrapModules(bootstrapModules: CreateRenderProps['bootstrapModules']) {
-  const isProduction = process.env.NODE_ENV === 'production';
-
-  return [isProduction ? '/client.js' : '/src/client.tsx', ...(bootstrapModules || [])].filter(
-    Boolean
-  );
 }

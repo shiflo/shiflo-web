@@ -15,6 +15,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
+    "types": ["@shiflo/ui/theme/typing"],
     "baseUrl": ".",
     "paths": {
       "@App": ["./src/App.tsx"],
@@ -23,7 +24,15 @@
       "@api": ["./api/*"],
       "@api/*": ["./api/*"],
       "@activities": ["./src/activities"],
-      "@activities/*": ["./src/activities/*"]
+      "@activities/*": ["./src/activities/*"],
+      "@components": ["./src/components"],
+      "@components/*": ["./src/components/*"],
+      "@entities": ["./src/entities"],
+      "@entities/*": ["./src/entities/*"],
+      "@hooks": ["./src/hooks"],
+      "@hooks/*": ["./src/hooks/*"],
+      "@libraries": ["./src/libraries"],
+      "@libraries/*": ["./src/libraries/*"]
     }
   }
 }
