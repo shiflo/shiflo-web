@@ -16,16 +16,7 @@ function Calendar() {
   });
 
   return (
-    <Box
-      as="section"
-      display="flex"
-      flexDirection="column"
-      flexGrow={1}
-      css={{
-        overflowY: 'auto',
-        overscrollBehavior: 'none'
-      }}
-    >
+    <>
       <Box
         display="flex"
         alignItems="center"
@@ -111,14 +102,20 @@ function Calendar() {
               </Button>
             ))}
             {schedules.map(({ id, title, style, start, end }) => (
-              <Task key={id} color={style.color} start={start} end={end}>
+              <Task
+                key={id}
+                color={style.color}
+                style={{
+                  gridColumn: `${start + 1} / span ${end}`
+                }}
+              >
                 {title}
               </Task>
             ))}
           </Box>
         ))}
       </Box>
-    </Box>
+    </>
   );
 }
 

@@ -1,16 +1,54 @@
-import type { PropsWithChildren } from 'react';
+import type { CSSProperties, PropsWithChildren } from 'react';
 
 import Box from '@shiflo/ui/Box';
 import Button from '@shiflo/ui/Button';
 import Typography from '@shiflo/ui/Typography';
 
 interface TaskProps {
-  start: number;
-  end: number;
   color?: string;
+  vertical?: boolean;
+  style?: CSSProperties;
 }
 
-function Task({ children, color, start = 0, end = 1 }: PropsWithChildren<TaskProps>) {
+function Task({
+  children = 'primary.main',
+  color,
+  vertical = false,
+  style
+}: PropsWithChildren<TaskProps>) {
+  if (vertical) {
+    return (
+      <Button
+        variant="text"
+        size="xSmall"
+        color="secondary"
+        css={({
+          theme: {
+            palette: { secondary }
+          }
+        }) => ({
+          flexDirection: 'column',
+          justifyContent: 'flex-start',
+          minWidth: '0px',
+          backgroundColor: secondary.main
+        })}
+        style={style}
+      >
+        <Box
+          br="200"
+          backgroundColor={(color as 'primary.main') || 'primary.main'}
+          css={{
+            width: '100%',
+            height: '2px'
+          }}
+        />
+        <Typography as="p" variant="small2" fontWeight={700} color="text.primary" lineClamp={2}>
+          {children}
+        </Typography>
+      </Button>
+    );
+  }
+
   return (
     <Button
       variant="text"
@@ -25,9 +63,7 @@ function Task({ children, color, start = 0, end = 1 }: PropsWithChildren<TaskPro
         minWidth: '0px',
         backgroundColor: secondary.main
       })}
-      style={{
-        gridColumn: `${start + 1} / span ${end}`
-      }}
+      style={style}
     >
       <Box
         br="200"

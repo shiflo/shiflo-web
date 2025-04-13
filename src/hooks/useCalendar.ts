@@ -18,7 +18,7 @@ export interface CalendarWeek {
   schedules: RenderedSchedule[];
 }
 
-export interface RenderedSchedule extends Pick<Schedule, 'id' | 'title' | 'style'> {
+export interface RenderedSchedule extends Omit<Schedule, 'createdAt' | 'updatedAt'> {
   start: number;
   end: number;
 }
@@ -27,6 +27,47 @@ export type CalendarViewMode = 'month' | 'week' | '2days';
 
 const calendarCache = new LRUCache<string, CalendarWeek[]>(100);
 const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
+
+export interface UseCalendarProps {
+  initialDate?: Dayjs;
+  weekStart?: 0 | 1;
+  mode?: CalendarViewMode;
+  shifts?: Shift[];
+  schedules?: Schedule[];
+}
+
+export default function useCalendar({
+  initialDate = dayjs(),
+  weekStart = 0,
+  mode = 'month',
+  shifts = [],
+  schedules = []
+}: UseCalendarProps = {}) {
+  const [offset, setOffset] = useState(0);
+
+  let baseDate: Dayjs;
+  if (mode === 'month') baseDate = initialDate.add(offset, 'month');
+  else if (mode === 'week') baseDate = initialDate.add(offset * 7, 'day');
+  else baseDate = initialDate.add(offset * 2, 'day');
+
+  const calendar = generateCalendarDates(baseDate, mode, weekStart, shifts, schedules);
+
+  const goToPrev = () => setOffset((prevState) => prevState - 1);
+
+  const goToNext = () => setOffset((prevState) => prevState + 1);
+
+  const reset = () => setOffset(0);
+
+  return {
+    baseDate,
+    daysOfWeek,
+    calendar,
+    goToPrev,
+    goToNext,
+    reset,
+    mode
+  };
+}
 
 function generateCalendarDates(
   baseDate: Dayjs,
@@ -78,7 +119,11 @@ function generateCalendarDates(
       rendered.push({
         id: schedule.id,
         title: schedule.title,
+        content: schedule.content,
         style: schedule.style,
+        startDate: schedule.startDate,
+        endDate: schedule.endDate,
+        isAllDay: schedule.isAllDay,
         start: startOffset,
         end: span
       });
@@ -113,43 +158,4 @@ function generateCalendarDates(
 
   calendarCache.set(cacheKey, calendar);
   return calendar;
-}
-
-export default function useCalendar({
-  initialDate = dayjs(),
-  weekStart = 0,
-  mode = 'month',
-  shifts = [],
-  schedules = []
-}: {
-  initialDate?: Dayjs;
-  weekStart?: 0 | 1;
-  mode?: CalendarViewMode;
-  shifts?: Shift[];
-  schedules?: Schedule[];
-} = {}) {
-  const [offset, setOffset] = useState(0);
-
-  let baseDate: Dayjs;
-  if (mode === 'month') baseDate = initialDate.add(offset, 'month');
-  else if (mode === 'week') baseDate = initialDate.add(offset * 7, 'day');
-  else baseDate = initialDate.add(offset * 2, 'day');
-
-  const calendar = generateCalendarDates(baseDate, mode, weekStart, shifts, schedules);
-
-  const goToPrev = () => setOffset((prevState) => prevState - 1);
-
-  const goToNext = () => setOffset((prevState) => prevState + 1);
-
-  const reset = () => setOffset(0);
-
-  return {
-    baseDate,
-    daysOfWeek,
-    calendar,
-    goToPrev,
-    goToNext,
-    reset,
-    mode
-  };
 }
