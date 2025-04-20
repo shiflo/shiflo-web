@@ -13,7 +13,7 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@shiflo/ui": "^0.0.5",
+    "@shiflo/ui": "^0.0.7",
     "basic-navigation": "^0.1.4",
     "basic-styled": "^0.1.8",
     "dayjs": "^1.11.13",

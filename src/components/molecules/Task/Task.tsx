@@ -59,6 +59,7 @@ function Task({
           palette: { secondary }
         }
       }) => ({
+        height: '25px',
         justifyContent: 'flex-start',
         minWidth: '0px',
         backgroundColor: secondary.main

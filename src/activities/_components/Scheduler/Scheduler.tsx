@@ -1,28 +1,39 @@
+import { useRef } from 'react';
+
 import Box from '@shiflo/ui/Box';
 
 import Button from '@shiflo/ui/Button';
 import Tag, { type TagProps } from '@shiflo/ui/Tag';
 import Typography from '@shiflo/ui/Typography';
 
+import useScheduler from '@activities/_hooks/useScheduler';
 import Task from '@components/molecules/Task';
 
-import useScheduler from '@hooks/useScheduler';
+import useSwipe from '@hooks/useSwipe';
 
 import schedules from '../../../database/schedules';
 import shifts from '../../../database/shifts';
 
-const viewType = 'week';
-
 function Scheduler() {
   const {
-    calendar,
+    weeks,
     times,
     getMinutesFromMidnight,
     getDaySchedules,
-    resolvePositionedSchedulesForDate
+    resolvePositionedSchedulesForDate,
+    goToPrev,
+    goToNext
   } = useScheduler({
     shifts,
     schedules
+  });
+
+  const ref = useRef<HTMLDivElement>(null);
+
+  useSwipe({
+    target: ref,
+    onSwipeLeft: goToNext,
+    onSwipeRight: goToPrev
   });
 
   return (
@@ -37,12 +48,12 @@ function Scheduler() {
           marginLeft: '64px',
           position: 'sticky',
           top: 0,
-          gridTemplateColumns: viewType === 'week' ? 'repeat(7, 1fr)' : '1fr',
+          gridTemplateColumns: 'repeat(7, 1fr)',
           backgroundColor: common.background,
           zIndex: 1
         })}
       >
-        {calendar[2].days.map(({ date, shift }) => (
+        {weeks[1].days.map(({ date, shift }) => (
           <Button
             key={date.day()}
             variant="text"
@@ -81,8 +92,8 @@ function Scheduler() {
             {date.format('D일')}
           </Button>
         ))}
-        {calendar[2].days.map(({ date }) => {
-          const daySchedules = getDaySchedules(calendar[2].schedules, date, true);
+        {weeks[1].days.map(({ date }) => {
+          const daySchedules = getDaySchedules(weeks[1].schedules, date, true);
 
           return (
             <Box
@@ -98,8 +109,7 @@ function Scheduler() {
                   key={`schedule-${id}-all-day`}
                   color={style.color}
                   style={{
-                    width: '100%',
-                    height: '25px'
+                    width: '100%'
                   }}
                 >
                   {title}
@@ -136,76 +146,90 @@ function Scheduler() {
             </Box>
           ))}
         </Box>
-        <Box flex={1}>
+        <Box flex={1} css={{ overflow: 'hidden' }}>
           <Box
-            display="grid"
-            flex={1}
+            ref={ref}
+            display="flex"
+            alignItems="flex-start"
+            justifyContent="center"
             css={{
-              gridTemplateColumns: viewType === 'week' ? 'repeat(7, 1fr)' : '1fr'
+              transform: 'translate3d(0, 0, 0)'
             }}
           >
-            {calendar[2].days.map(({ date }) => {
-              const daySchedules = getDaySchedules(calendar[2].schedules, date);
-              const positioned = resolvePositionedSchedulesForDate(daySchedules, date);
+            {weeks.map(({ days, schedules }) => (
+              <Box
+                key={`week-${days[0].date.toISOString()}`}
+                display="grid"
+                flex={1}
+                css={{
+                  minWidth: '100%',
+                  gridTemplateColumns: 'repeat(7, 1fr)'
+                }}
+              >
+                {days.map(({ date }) => {
+                  const daySchedules = getDaySchedules(schedules, date);
+                  const positioned = resolvePositionedSchedulesForDate(daySchedules, date);
 
-              return (
-                <Box
-                  key={date.toISOString()}
-                  css={({
-                    theme: {
-                      palette: { border }
-                    }
-                  }) => ({
-                    borderLeft: `1px solid ${border.light}`
-                  })}
-                >
-                  <Box
-                    display="grid"
-                    css={{ position: 'relative', gridTemplateRows: 'repeat(24, 60px)' }}
-                  >
-                    {times.map((time) => (
+                  return (
+                    <Box
+                      key={date.toISOString()}
+                      css={({
+                        theme: {
+                          palette: { border }
+                        }
+                      }) => ({
+                        borderLeft: `1px solid ${border.light}`
+                      })}
+                    >
                       <Box
-                        key={`${time}-block`}
-                        css={({
-                          theme: {
-                            palette: { border }
+                        display="grid"
+                        css={{ position: 'relative', gridTemplateRows: 'repeat(24, 60px)' }}
+                      >
+                        {times.map((time) => (
+                          <Box
+                            key={`${time}-block`}
+                            css={({
+                              theme: {
+                                palette: { border }
+                              }
+                            }) => ({ borderTop: `1px solid ${border.light}`, height: '60px' })}
+                          />
+                        ))}
+                        {positioned.map(
+                          ({ id, startDate, endDate, style, totalColumns, columnIndex, title }) => {
+                            const startMin = getMinutesFromMidnight(startDate);
+                            const endMin = getMinutesFromMidnight(endDate);
+
+                            const top = (startMin / 60) * 60; // px
+                            const height = ((endMin - startMin) / 60) * 60;
+
+                            const width = 100 / totalColumns;
+                            const left = columnIndex * width;
+
+                            return (
+                              <Task
+                                key={id}
+                                vertical
+                                color={style?.color}
+                                style={{
+                                  position: 'absolute',
+                                  top: `${top + 1}px`,
+                                  height: `${height - 1}px`,
+                                  width: `${width}%`,
+                                  left: `${left}%`
+                                }}
+                              >
+                                {title}
+                              </Task>
+                            );
                           }
-                        }) => ({ borderTop: `1px solid ${border.light}`, height: '60px' })}
-                      />
-                    ))}
-                    {positioned.map(
-                      ({ id, startDate, endDate, style, totalColumns, columnIndex, title }) => {
-                        const startMin = getMinutesFromMidnight(startDate);
-                        const endMin = getMinutesFromMidnight(endDate);
-
-                        const top = (startMin / 60) * 60; // px
-                        const height = ((endMin - startMin) / 60) * 60;
-
-                        const width = 100 / totalColumns;
-                        const left = columnIndex * width;
-
-                        return (
-                          <Task
-                            key={id}
-                            vertical
-                            color={style?.color}
-                            style={{
-                              position: 'absolute',
-                              top: `${top + 1}px`,
-                              height: `${height - 1}px`,
-                              width: `${width}%`,
-                              left: `${left}%`
-                            }}
-                          >
-                            {title}
-                          </Task>
-                        );
-                      }
-                    )}
-                  </Box>
-                </Box>
-              );
-            })}
+                        )}
+                      </Box>
+                    </Box>
+                  );
+                })}
+              </Box>
+            ))}
           </Box>
         </Box>
       </Box>

@@ -1,6 +1,6 @@
-import { useState } from 'react';
-
 import dayjs, { type Dayjs } from 'dayjs';
+
+import useTime from '@activities/_providers/TimeProvider/useTime';
 
 import type { Schedule } from '@entities/schedule';
 import type { Shift } from '@entities/shift';
@@ -23,34 +23,28 @@ export interface RenderedSchedule extends Omit<Schedule, 'createdAt' | 'updatedA
   end: number;
 }
 
-export type CalendarViewMode = 'month' | 'week' | '2days';
-
 const calendarCache = new LRUCache<string, CalendarWeek[]>(100);
 const daysOfWeek = ['일', '월', '화', '수', '목', '금', '토'];
 
 export interface UseCalendarProps {
   initialDate?: Dayjs;
   weekStart?: 0 | 1;
-  mode?: CalendarViewMode;
   shifts?: Shift[];
   schedules?: Schedule[];
 }
 
 export default function useCalendar({
-  initialDate = dayjs(),
   weekStart = 0,
-  mode = 'month',
   shifts = [],
   schedules = []
 }: UseCalendarProps = {}) {
-  const [offset, setOffset] = useState(0);
+  const { baseDate, setOffset } = useTime();
 
-  let baseDate: Dayjs;
-  if (mode === 'month') baseDate = initialDate.add(offset, 'month');
-  else if (mode === 'week') baseDate = initialDate.add(offset * 7, 'day');
-  else baseDate = initialDate.add(offset * 2, 'day');
-
-  const calendar = generateCalendarDates(baseDate, mode, weekStart, shifts, schedules);
+  const calendars = [
+    generateCalendarDates(baseDate.subtract(1, 'month'), weekStart, shifts, schedules),
+    generateCalendarDates(baseDate, weekStart, shifts, schedules),
+    generateCalendarDates(baseDate.add(1, 'month'), weekStart, shifts, schedules)
+  ];
 
   const goToPrev = () => setOffset((prevState) => prevState - 1);
 
@@ -61,22 +55,20 @@ export default function useCalendar({
   return {
     baseDate,
     daysOfWeek,
-    calendar,
+    calendars,
     goToPrev,
     goToNext,
-    reset,
-    mode
+    reset
   };
 }
 
 function generateCalendarDates(
   baseDate: Dayjs,
-  mode: CalendarViewMode,
   weekStart: 0 | 1,
   shifts: Shift[] = [],
   schedules: Schedule[] = []
 ): CalendarWeek[] {
-  const cacheKey = `${baseDate.format('YYYY-MM-DD')}-${mode}-${weekStart}`;
+  const cacheKey = `${baseDate.format('YYYY-MM-DD')}-${weekStart}-${JSON.stringify(shifts)}-${JSON.stringify(schedules)}`;
   const cached = calendarCache.get(cacheKey);
   if (cached) return cached;
 
@@ -145,7 +137,7 @@ function generateCalendarDates(
 
         return {
           date,
-          isCurrentMonth: date.month() === baseDate.month(),
+          isCurrentMonth: date.isSame(baseDate, 'month'),
           shift: shiftMap.get(dateStr),
           scheduleCount
         };
@@ -157,5 +149,6 @@ function generateCalendarDates(
   }
 
   calendarCache.set(cacheKey, calendar);
+
   return calendar;
 }

@@ -3,7 +3,11 @@ import Button from '@shiflo/ui/Button';
 import Icon from '@shiflo/ui/Icon';
 import Typography from '@shiflo/ui/Typography';
 
+import useTime from '@activities/_providers/TimeProvider/useTime';
+
 function Toolbar() {
+  const { baseDate } = useTime();
+
   return (
     <Box
       as="header"
@@ -16,7 +20,7 @@ function Toolbar() {
       pb="200"
     >
       <Typography as="h1" variant="heading1" fontWeight={700}>
-        3월
+        {baseDate.format('MMM')}
       </Typography>
       <Box display="flex" alignItems="center">
         <Button
