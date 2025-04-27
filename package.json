@@ -13,9 +13,9 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@shiflo/ui": "^0.0.7",
-    "basic-navigation": "^0.1.4",
-    "basic-styled": "^0.1.8",
+    "@shiflo/ui": "^0.0.10",
+    "basic-navigation": "^0.1.6",
+    "basic-styled": "^0.1.11",
     "dayjs": "^1.11.13",
     "hono": "^4.7.2",
     "react": "^19.1.0",

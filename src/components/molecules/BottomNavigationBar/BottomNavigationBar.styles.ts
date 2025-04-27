@@ -1,6 +1,6 @@
 import styled from 'basic-styled';
 
-export const StyledBottomNavigationBar = styled.nav`
+export const Inner = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -14,11 +14,6 @@ export const StyledBottomNavigationBar = styled.nav`
   }) => border.light};
   border-top-left-radius: ${({ theme: { radius } }) => radius['300']};
   border-top-right-radius: ${({ theme: { radius } }) => radius['300']};
-  background-color: ${({
-    theme: {
-      palette: { common }
-    }
-  }) => common.background};
   margin-left: -1px;
   margin-right: -1px;
   overflow: hidden;

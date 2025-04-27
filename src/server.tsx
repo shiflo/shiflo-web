@@ -18,13 +18,18 @@ export async function createRender({
   bootstrapModules,
   ...options
 }: CreateRenderProps): Promise<ReturnType<Handler>> {
+  const safeAreaTop = Number(context.req.header('top')) || 0;
+  const safeAreaBottom = Number(context.req.header('bottom')) || 0;
+
   const readableStream = await renderToReadableStream(
-    <Html>
+    <Html safeAreaTop={safeAreaTop} safeAreaBottom={safeAreaBottom}>
       <App initPath={context.req.path} />
     </Html>,
     {
       bootstrapScriptContent: initBootstrapScriptContent(bootstrapScriptContent, {
-        initPath: context.req.path
+        initPath: context.req.path,
+        safeAreaTop,
+        safeAreaBottom
       }),
       bootstrapModules,
       ...options

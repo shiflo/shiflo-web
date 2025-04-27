@@ -207,6 +207,19 @@ const schedules = [
     },
     createdAt: '2025-04-12T10:00:00',
     updatedAt: '2025-04-12T10:00:00'
+  },
+  {
+    id: 17,
+    title: '명상의 날78',
+    content: '안녕하세요',
+    startDate: '2025-04-15T22:30:00',
+    endDate: '2025-04-16T24:00:00',
+    isAllDay: false,
+    style: {
+      color: 'primary.main'
+    },
+    createdAt: '2025-04-12T10:00:00',
+    updatedAt: '2025-04-12T10:00:00'
   }
 ];
 

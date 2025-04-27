@@ -1,8 +1,6 @@
 import ThemeProvider from '@shiflo/ui/theme/ThemeProvider';
 import { Route, Router } from 'basic-navigation';
 
-import createBuilder from 'basic-styled/setup/createBuilder';
-
 import dayjs from 'dayjs';
 
 import isoWeek from 'dayjs/plugin/isoWeek';
@@ -12,14 +10,11 @@ import HomeActivity from '@activities/activity';
 import NotFoundActivity from '@activities/error/not-found/activity';
 import MyActivity from '@activities/my/activity';
 import 'dayjs/locale/ko';
+import './App.css';
 
 dayjs.locale('ko');
 dayjs.extend(minMax);
 dayjs.extend(isoWeek);
-
-createBuilder({
-  prefix: 'shiflo'
-});
 
 interface AppProps {
   initPath?: string;
