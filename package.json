@@ -1,5 +1,5 @@
 {
-  "name": "@shiftly/web",
+  "name": "@shiflo/web",
   "type": "module",
   "private": true,
   "sideEffects": false,
@@ -13,13 +13,14 @@
     "prepare": "husky"
   },
   "dependencies": {
-    "@shiflo/ui": "^0.0.10",
-    "basic-navigation": "^0.1.6",
+    "@shiflo/ui": "^0.0.19",
+    "basic-navigation": "^0.1.15",
     "basic-styled": "^0.1.11",
     "dayjs": "^1.11.13",
     "hono": "^4.7.2",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "zustand": "^5.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.23.0",

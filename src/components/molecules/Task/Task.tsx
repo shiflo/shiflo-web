@@ -10,12 +10,7 @@ interface TaskProps {
   style?: CSSProperties;
 }
 
-function Task({
-  children = 'primary.main',
-  color,
-  vertical = false,
-  style
-}: PropsWithChildren<TaskProps>) {
+function Task({ children, color, vertical = false, style }: PropsWithChildren<TaskProps>) {
   if (vertical) {
     return (
       <Button

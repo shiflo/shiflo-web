@@ -19,7 +19,7 @@ export const Inner = styled.div`
   overflow: hidden;
 
   & > button {
-    flex-grow: 1;
+    flex: 1;
 
     &:active,
     &:focus,

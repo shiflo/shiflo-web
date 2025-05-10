@@ -7,7 +7,11 @@ import { useNavigation } from 'basic-navigation';
 
 import { Inner } from '@components/molecules/BottomNavigationBar/BottomNavigationBar.styles';
 
-function BottomNavigationBar() {
+interface BottomNavigationBarProps {
+  hideBottomNavigationBar?: boolean;
+}
+
+function BottomNavigationBar({ hideBottomNavigationBar }: BottomNavigationBarProps) {
   const navigation = useNavigation();
 
   const handleClick = () =>
@@ -31,6 +35,10 @@ function BottomNavigationBar() {
   return (
     <Box
       as="nav"
+      style={{
+        transition: 'transform 0.2s ease-in-out',
+        transform: hideBottomNavigationBar ? 'translateY(100%)' : 'translateY(0)'
+      }}
       css={({
         theme: {
           palette: { common }
@@ -49,14 +57,74 @@ function BottomNavigationBar() {
             gap="200"
             css={{
               '& svg': {
-                width: '24px !important',
-                height: '24px !important'
+                width: '20px !important',
+                height: '20px !important'
               }
             }}
           >
-            <Icon name="CalendarLine" color="text.primary" />
-            <Typography as="p" variant="small2" color="text.primary">
-              일정
+            <Icon name="CalendarLine" color="primary.main" />
+            <Typography as="p" variant="small2" color="primary.main" fontWeight={700}>
+              월간
+            </Typography>
+          </Box>
+        </Button>
+        <Button variant="text" size="large" onClick={handleClick}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            gap="200"
+            css={{
+              '& svg': {
+                width: '20px !important',
+                height: '20px !important'
+              }
+            }}
+          >
+            <Icon name="ChartSimpleHorizontalSolid" />
+            <Typography as="p" variant="small2" fontWeight={700}>
+              주간
+            </Typography>
+          </Box>
+        </Button>
+        <Button variant="text" size="large" onClick={handleClick}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            gap="200"
+            css={{
+              '& svg': {
+                width: '20px !important',
+                height: '20px !important'
+              }
+            }}
+          >
+            <Icon name="BriefcaseBlankSolid" />
+            <Typography as="p" variant="small2" fontWeight={700}>
+              근무
+            </Typography>
+          </Box>
+        </Button>
+        <Button variant="text" size="large" onClick={handleClick}>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            justifyContent="center"
+            gap="200"
+            css={{
+              '& svg': {
+                width: '20px !important',
+                height: '20px !important'
+              }
+            }}
+          >
+            <Icon name="ClockDeskSolid" />
+            <Typography as="p" variant="small2" fontWeight={700}>
+              알람
             </Typography>
           </Box>
         </Button>
@@ -69,13 +137,13 @@ function BottomNavigationBar() {
             gap="200"
             css={{
               '& svg': {
-                width: '24px !important',
-                height: '24px !important'
+                width: '20px !important',
+                height: '20px !important'
               }
             }}
           >
             <Icon name="Grid2Solid" />
-            <Typography as="p" variant="small2">
+            <Typography as="p" variant="small2" fontWeight={700}>
               더 보기
             </Typography>
           </Box>

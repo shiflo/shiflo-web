@@ -56,8 +56,5 @@ export default defineConfig({
         replacement: resolve(__dirname, 'src/libraries')
       }
     ]
-  },
-  server: {
-    host: '192.168.0.41'
   }
 });

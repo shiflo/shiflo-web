@@ -9,6 +9,7 @@ import minMax from 'dayjs/plugin/minMax';
 import HomeActivity from '@activities/activity';
 import NotFoundActivity from '@activities/error/not-found/activity';
 import MyActivity from '@activities/my/activity';
+import AddScheduleActivity from '@activities/schedules/add/activity';
 import 'dayjs/locale/ko';
 import './App.css';
 
@@ -26,6 +27,11 @@ function App({ initPath }: AppProps) {
       <Router initPath={initPath}>
         <Route name="HomeActivity" path="/" activity={<HomeActivity />} />
         <Route name="MyActivity" path="/my" activity={<MyActivity />} />
+        <Route
+          name="AddScheduleActivity"
+          path="/schedules/add"
+          activity={<AddScheduleActivity />}
+        />
         <Route name="NotFoundActivity" path="/*path" activity={<NotFoundActivity />} />
       </Router>
     </ThemeProvider>

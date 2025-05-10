@@ -10,7 +10,7 @@ const shifts = [
     updatedAt: '2025-04-12T10:00:00'
   },
   {
-    id: 1,
+    id: 2,
     date: '2025-04-12',
     label: '휴무',
     style: {
@@ -20,7 +20,7 @@ const shifts = [
     updatedAt: '2025-03-25T10:00:00'
   },
   {
-    id: 1,
+    id: 3,
     date: '2025-04-13',
     label: '야간',
     style: {

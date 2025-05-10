@@ -16,6 +16,7 @@ export default function TimeProvider({
 }: PropsWithChildren<TimeProviderProps>) {
   const [offset, setOffset] = useState(0);
   const [mode, setMode] = useState<'month' | 'week'>(initialMode);
+
   const baseDate = initialDate.add(offset, mode);
 
   return (

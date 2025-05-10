@@ -6,6 +6,8 @@ interface UseSwipeOptions {
   onSwipeRight?: () => void;
   threshold?: number; // 최소 이동 거리 비율 (기본 20%)
   duration?: number; // 애니메이션 지속 시간 (기본 300ms)
+  disableSwipeRight?: boolean;
+  disableSwipeLeft?: boolean;
 }
 
 export default function useSwipe({
@@ -13,7 +15,9 @@ export default function useSwipe({
   onSwipeLeft,
   onSwipeRight,
   threshold = 0.2,
-  duration = 300
+  duration = 300,
+  disableSwipeRight = false,
+  disableSwipeLeft = false
 }: UseSwipeOptions) {
   const startXRef = useRef(0);
   const startYRef = useRef(0);
@@ -24,37 +28,28 @@ export default function useSwipe({
   const deltaXRef = useRef(0);
   const deltaYRef = useRef(0);
   const hasMovedRef = useRef(false);
-  const timerRef = useRef<Set<NodeJS.Timeout>>(new Set());
+  const transitionEndRef = useRef<((e: TransitionEvent) => void) | null>(null);
+  const rafId1Ref = useRef(0);
+  const rafId2Ref = useRef(0);
 
   useEffect(() => {
     const element = target.current;
 
     if (!element) return;
 
-    const timer = timerRef.current;
-
     const updateItemWidth = () => {
       itemWidthRef.current = element.clientWidth;
     };
 
-    const updateContainerHeight = () => {
-      const current = element.querySelectorAll('.calendar')[1] as HTMLElement;
-      const container = element;
-
-      if (!current || !container) return;
-
-      const newHeight = current.offsetHeight;
-      container.style.height = `${newHeight}px`;
-    };
-
     updateItemWidth();
-    updateContainerHeight();
 
     const handleTouchStart = (e: TouchEvent) => {
       if (isUpdatingRef.current) return;
 
-      timer.forEach((timeoutId) => clearTimeout(timeoutId));
-      timer.clear();
+      if (transitionEndRef.current) {
+        element.removeEventListener('transitionend', transitionEndRef.current);
+        transitionEndRef.current = null;
+      }
 
       startXRef.current = e.touches[0].clientX;
       startYRef.current = e.touches[0].clientY;
@@ -85,6 +80,16 @@ export default function useSwipe({
         }
       }
 
+      if (
+        (disableSwipeRight && translateXRef.current > 0) ||
+        (disableSwipeLeft && translateXRef.current < 0)
+      ) {
+        isDraggingRef.current = false;
+        element.style.transition = `transform ${duration}ms cubic-bezier(0.25, 1, 0.5, 1)`;
+        element.style.transform = 'translate3d(0, 0, 0)';
+        return;
+      }
+
       element.style.transition = 'none';
       element.style.transform = `translate3d(${translateXRef.current}px, 0, 0)`;
     };
@@ -103,39 +108,41 @@ export default function useSwipe({
 
       if (moved > minDistance) {
         element.style.transform = `translate3d(${width}px, 0, 0)`;
-        timer.add(
-          setTimeout(() => {
-            onSwipeRight?.();
-            timer.add(
-              setTimeout(() => {
+
+        transitionEndRef.current = (e: TransitionEvent) => {
+          if (e.propertyName === 'transform') {
+            rafId1Ref.current = requestAnimationFrame(() => {
+              onSwipeRight?.();
+              rafId2Ref.current = requestAnimationFrame(() => {
                 element.style.transition = 'none';
                 element.style.transform = 'translate3d(0, 0, 0)';
                 isUpdatingRef.current = false;
-              })
-            );
-          }, duration)
-        );
+              });
+            });
+          }
+        };
+
+        element.addEventListener('transitionend', transitionEndRef.current);
       } else if (moved < -minDistance) {
         element.style.transform = `translate3d(-${width}px, 0, 0)`;
-        timer.add(
-          setTimeout(() => {
-            onSwipeLeft?.();
-            timer.add(
-              setTimeout(() => {
+
+        transitionEndRef.current = (e: TransitionEvent) => {
+          if (e.propertyName === 'transform') {
+            rafId1Ref.current = requestAnimationFrame(() => {
+              onSwipeLeft?.();
+              rafId2Ref.current = requestAnimationFrame(() => {
                 element.style.transition = 'none';
                 element.style.transform = 'translate3d(0, 0, 0)';
                 isUpdatingRef.current = false;
-              })
-            );
-          }, duration)
-        );
+              });
+            });
+          }
+        };
+
+        element.addEventListener('transitionend', transitionEndRef.current);
       } else {
+        isUpdatingRef.current = false;
         element.style.transform = 'translate3d(0, 0, 0)';
-        timer.add(
-          setTimeout(() => {
-            isUpdatingRef.current = false;
-          })
-        );
       }
     };
 
@@ -151,33 +158,21 @@ export default function useSwipe({
       element.removeEventListener('touchmove', handleTouchMove);
       element.removeEventListener('touchend', handleTouchEnd);
       element.removeEventListener('touchcancel', handleTouchEnd);
+
+      if (transitionEndRef.current) {
+        element.removeEventListener('transitionend', transitionEndRef.current);
+      }
     };
-  }, [target, onSwipeLeft, onSwipeRight, threshold, duration]);
+  }, [target, onSwipeLeft, onSwipeRight, threshold, duration, disableSwipeRight, disableSwipeLeft]);
 
   useEffect(() => {
-    const updateContainerHeight = () => {
-      const element = target.current;
-
-      if (!element) return;
-
-      const current = element.querySelectorAll('.calendar')[1] as HTMLElement;
-      const container = element;
-
-      if (!current || !container) return;
-
-      const newHeight = current.offsetHeight;
-      container.style.height = `${newHeight}px`;
-    };
-
-    updateContainerHeight();
-  }, [target]);
-
-  useEffect(() => {
-    const timer = timerRef.current;
-
     return () => {
-      timer.forEach((timeoutId) => clearTimeout(timeoutId));
-      timer.clear();
+      if (rafId1Ref.current) {
+        cancelAnimationFrame(rafId1Ref.current);
+      }
+      if (rafId2Ref.current) {
+        cancelAnimationFrame(rafId2Ref.current);
+      }
     };
   }, []);
 }

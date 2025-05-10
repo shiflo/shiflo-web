@@ -27,9 +27,7 @@ export async function createRender({
     </Html>,
     {
       bootstrapScriptContent: initBootstrapScriptContent(bootstrapScriptContent, {
-        initPath: context.req.path,
-        safeAreaTop,
-        safeAreaBottom
+        initPath: context.req.path
       }),
       bootstrapModules,
       ...options

@@ -8,7 +8,7 @@ function MyActivity() {
       statusBarHeight="var(--safe-area-inset-top, 0px)"
       systemBottomNavigationBarHeight="var(--safe-area-inset-bottom, 0px)"
       bottomNavigationBar={<BottomNavigationBar />}
-      bottomNavigationBarHeight="72px"
+      bottomNavigationBarHeight="69px"
     >
       <h1>My Activity</h1>
     </AppScreen>
